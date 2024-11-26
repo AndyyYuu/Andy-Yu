@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dynamic Digital Background</title>
+    <link rel="stylesheet" href="styles.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/examples/js/loaders/GLTFLoader.js"></script>
+</head>
+<body>
+    <div id="background"><div id="webgl-output"></div>
+
+    <script>
+        
+        const scene = new THREE.Scene();
+
+        // 创建相机 (视野宽度、高度、近平面、远平面)
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        // 创建 WebGL 渲染器并设置大小
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('webgl-output').appendChild(renderer.domElement);
+
+        // 设置金色材质
+        const goldMaterial = new THREE.MeshStandardMaterial({ color: 0xFFD700, metalness: 0.8, roughness: 0.3 });
+
+        // 光源
+        const ambientLight = new THREE.AmbientLight(0xffffff, 0.5); // 环境光
+        scene.add(ambientLight);
+        const pointLight = new THREE.PointLight(0xffffff, 1); // 点光源
+        pointLight.position.set(10, 10, 10);
+        scene.add(pointLight);
+
+        // 五角星形状函数
+        function createStar(size) {
+            const shape = new THREE.Shape();
+            const angle = Math.PI / 5;
+            for (let i = 0; i < 10; i++) {
+                const radius = i % 2 === 0 ? size : size / 2.5;
+                const x = Math.sin(i * angle) * radius;
+                const y = Math.cos(i * angle) * radius;
+                shape.lineTo(x, y);
+            }
+            shape.closePath();
+            const extrudeSettings = { depth: 0.3, bevelEnabled: false };
+            const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+            return new THREE.Mesh(geometry, goldMaterial);
+        }
+
+        // 创建大的主五角星
+        const bigStar = createStar(1);
+        bigStar.position.set(-2.5, 1.5, 0); // 左上角位置
+        scene.add(bigStar);
+
+        // 创建四个小五角星
+        const smallStars = [];
+        const positions = [
+            { x: -1.5, y: 2, rotation: -Math.PI / 4 },
+            { x: -0.8, y: 1.5, rotation: -Math.PI / 8 },
+            { x: -0.5, y: 0.8, rotation: Math.PI / 8 },
+            { x: -1, y: 0.3, rotation: Math.PI / 4 }
+        ];
+
+        positions.forEach(pos => {
+            const smallStar = createStar(0.4);
+            smallStar.position.set(pos.x, pos.y, 0); // 设置位置
+            smallStar.rotation.z = pos.rotation; // 设置旋转
+            scene.add(smallStar);
+            smallStars.push(smallStar);
+        });
+
+        // 设置相机位置
+        camera.position.z = 5;
+
+        // 渲染循环
+
+        function animate() {
+            requestAnimationFrame(animate);
+            renderer.render(scene, camera);
+            bigStar.rotation.x += 0.01;
+            bigStar.rotation.y += 0.01;
+            smallStars.rotation.x += 0.01;
+            
+        }
+
+        animate();
+    </script>
+
+</div>
+    
+    <div class="content" id="original-content">
+        <h1>Welcome to the <a href="UI/UI.html" target='_blank'>Andy</a>大王's World</h1>
+        <p>Enjoy the dynamic number animation background!</p>
+        <a href="album2.html" target="_blank">
+            <img src="photo.png" alt="点击进入网站" />
+        </a>
+        <a href:"http://localhost:8878/" target="_blank"><p>game</p></a>
+    </div>
+    
+    <div id="animatedImageContainer">
+        <!-- 默认显示第一张动图 -->
+        <img src="seven1.gif" alt="First Animated Image" id="animatedImage1" class="animatedImage">
+        <!-- 第二张动图 -->
+        <img src="seven3.gif" alt="Second Animated Image" id="animatedImage2" class="animatedImage">
+    </div>
+    <div id="animatedImageContainer2">
+        <img src="seven2.webp" alt="Animated Image" id="animatedImage">
+    </div>
+    <div class="image-container">
+        <img src="images/image1.png" class="active" alt="Image 1">
+        <img src="images/image2.png" alt="Image 2">
+        <img src="images/image3.png" alt="Image 3">
+        <img src="images/image4.png" alt="Image 4">
+        <img src="images/image5.png" alt="Image 5">
+    </div>
+    
+   
+    <div class="moving-image" id="'cat">
+        <img src="cattt-unscreen.gif" alt="Moving GIF">
+    </div>
+
+    <div id="hacked-container" class="hidden">
+        <h1>You've been hacked!</h1>
+    </div>
+    
+
+    
+
+    <script src="script.js"></script>
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>3D Rotating Sphere</title>
+    <style>
+        .carousel {
+            position: relative;
+            width: 600px;
+            height: 300px;
+            overflow: hidden;
+            /* 隐藏超出部分 */
+            display: flex;
+            align-items: center;
+            margin-top: 200px;  /* 使轮播图片稍微离开球体 */
+        }
+
+        .carousel img {
+            position: absolute;
+            width: 200px;
+            height: auto;
+            transition: all 1.5s ease;
+            /* 平滑过渡效果 */
+            opacity: 0;
+            /* 默认隐藏 */
+            filter: blur(2px);
+            /* 默认模糊 */
+            transform: scale(0.8);
+            /* 默认缩小 */
+        }
+
+        /* 中间图片 */
+        .carousel img.center {
+            left: 50%;
+            transform: translateX(-50%) scale(1);
+            opacity: 1;
+            filter: blur(0);
+        }
+
+        /* 左边图片 */
+        .carousel img.left {
+            left: 5%;
+            transform: translateX(0) scale(0.9);
+            opacity: 0.8;
+            filter: blur(1px);
+        }
+
+        /* 右边图片 */
+        .carousel img.right {
+            left: 95%;
+            transform: translateX(-100%) scale(0.9);
+            opacity: 0.8;
+            filter: blur(1px);
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #1c1c1c;
+        }
+
+        #webgl-output {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+        }
+    </style>
+</head>
+<body>
+
+<div id="webgl-output"></div>
+<div class="carousel">
+    <!-- 添加图片 -->
+    <img src="albums/image9.jpg" alt="图片1" class="center" />
+    <img src="albums/image2.jpg" alt="图片2" class="right" />
+    <img src="albums/image3.jpg" alt="图片3" />
+    <img src="albums/image4.jpg" alt="图片4" />
+    <img src="albums/image5.jpg" alt="图片5" />
+    <img src="albums/image6.jpg" alt="图片6" />
+    <img src="albums/image10.jpg" alt="图片7" />
+
+    <img src="albums/image8.jpg" alt="图片8" class="left" />
+</div>
+
+<!-- Include Three.js library -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+
+<script>
+    // 定义变量
+    let isTransitioning = false;  // 用于判断是否正在轮播，防止过快触发
+    let currentIndex = 0;
+    const images = document.querySelectorAll('.carousel img');
+
+    // 鼠标悬停触发轮播
+    images.forEach((img, index) => {
+        img.addEventListener('mouseenter', () => {
+            if (isTransitioning) return;  // 如果正在过渡中，阻止操作
+
+            isTransitioning = true;  // 设置为正在过渡
+            currentIndex = index;
+            updateCarousel();
+
+            // 延迟两秒后允许下一次轮播
+            setTimeout(() => {
+                isTransitioning = false;
+            }, 1000);  // 两秒后允许下一次切换
+        });
+    });
+
+    // 更新轮播图状态
+    function updateCarousel() {
+        images.forEach((img, index) => {
+            img.className = '';  // 清除所有类名
+
+            if (index === currentIndex) {
+                img.classList.add('center'); // 中间图片
+            } else if (index === (currentIndex - 1 + images.length) % images.length) {
+                img.classList.add('left'); // 左边图片
+            } else if (index === (currentIndex + 1) % images.length) {
+                img.classList.add('right'); // 右边图片
+            }
+        });
+    }
+
+    // 初始化轮播状态
+    updateCarousel();
+</script>
+
+<script>
+    // Create the scene
+    const scene = new THREE.Scene();
+
+    // Set up the camera (field of view, aspect ratio, near and far clipping planes)
+    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+    camera.position.z = 5;  // Set the camera position along the Z axis
+
+    // Set up the WebGL renderer and append it to the DOM
+    const renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    document.getElementById('webgl-output').appendChild(renderer.domElement);
+
+    // Create a 3D sphere geometry and apply a material to it
+    const geometry = new THREE.SphereGeometry(2, 32, 32);  // Radius, width segments, height segments
+    const material = new THREE.MeshBasicMaterial({ color: 0x4f65d4, wireframe: true });  // Wireframe material
+    const sphere = new THREE.Mesh(geometry, material);
+    scene.add(sphere);
+
+    // Variables to track mouse position for drag rotation
+    let isMouseDown = false;
+    let startX = 0;
+    let startY = 0;
+    let rotationX = 0;
+    let rotationY = 0;
+
+    // Mouse down event
+    renderer.domElement.addEventListener('mousedown', (event) => {
+        isMouseDown = true;
+        startX = event.clientX;
+        startY = event.clientY;
+    });
+
+    // Mouse move event
+    renderer.domElement.addEventListener('mousemove', (event) => {
+        if (isMouseDown) {
+            const deltaX = event.clientX - startX;
+            const deltaY = event.clientY - startY;
+            rotationY += deltaX * 0.005;
+            rotationX -= deltaY * 0.005;
+            sphere.rotation.y = rotationY;
+            sphere.rotation.x = rotationX;
+        }
+    });
+
+    // Mouse up event
+    renderer.domElement.addEventListener('mouseup', () => {
+        isMouseDown = false;
+    });
+
+    // Animation loop to render the scene
+    function animate() {
+        requestAnimationFrame(animate);
+
+        // Render the scene from the camera's perspective
+        renderer.render(scene, camera);
+    }
+
+    // Start the animation
+    animate();
+
+    // Handle window resizing to adjust the camera and renderer
+    window.addEventListener('resize', () => {
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+    });
+</script>
+
+</body>
+</html>

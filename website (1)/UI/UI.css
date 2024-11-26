@@ -1,0 +1,211 @@
+:root {
+--orange: #da722c;
+--dark-blue: #023047;
+--dark: #070917;
+--light: #e8f7fb;
+--light-blue: #6f7dfb;
+
+}
+
+*,
+*::after,
+*::before{
+    box-sizing: border-box;
+}
+body{
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+}
+
+.btn{
+    padding: 16px 32px;
+    border-radius: 24px;
+    color: white;
+    display: inline-block;
+    font-weight: bold;
+    font-size: 16px;
+    text-decoration: none;
+    position: relative;
+}
+.btn.dark{
+    background-color: var(--dark-blue);
+}
+
+.btn.light{
+    background-color: var(--orange);
+}
+
+.btn.enroll::before{
+content: url(image/brush.svg);
+position: absolute;
+top: 50%;
+left: 32px;
+transform: translateY(-50%);
+}
+
+.btn.enroll{
+    padding-left: 60px;
+}
+
+.wrapper{
+    max-width: 1134px;
+    margin: 0 auto;
+    
+}
+
+header {
+    background: linear-gradient(180deg, #6f7dfb 0%, #26308c 100%);
+    width: 100%;
+}
+
+nav{
+    display:flex;
+    justify-content: space-between;
+    align-items: center;
+    position:fixed;
+    width:1134px;
+    top:36px;
+    z-index: 100;
+}
+nav .logo{
+    font-weight: 900;
+    font-size: 40px;
+    color:white;
+    font-family: "Raleway";
+}
+
+nav ul{
+    display:flex;
+    align-items: center;
+    gap:60px;
+    list-style: none;
+    margin: 0
+}
+
+nav ul li a{
+    font-family:Poppins;
+    font-weight:bold;
+    font-size:16px;
+    color:white;
+    text-decoration: none;
+
+}
+
+.hero{
+    display:flex;
+    height:100vh;
+    width:100%;
+    align-items: center;
+    justify-content: space-between;
+    padding-top: 60px;
+}
+
+.hero .left h1{
+    font-family: "Raleway";
+    font-weight: 900;
+    font-size: 50px;
+    color:white;
+    margin-bottom: 0;
+}
+
+.hero .left p{
+    font-family: 'Poppins';
+    font-size: 16px;
+    color:white;
+    margin-bottom:24px
+}
+
+.hero .left{
+    width: 1000px;
+}
+
+.hero .right img{
+    height: 520px;
+    vertical-align: middle;
+}
+.hero .right{
+    align-self: flex-end;
+}
+
+.achicard{
+    position:absolute;
+
+}
+
+.achicard .content{
+    background-color: white;
+    border-radius: 24px;
+    padding:8px 32px;
+    z-index: 10;
+    position: relative;
+}
+
+.achicard.students{
+    left: 47%;
+    top:330px;
+}
+
+.achicard h3{
+    font-family:'Poppins';
+    font-weight:bold;
+    font-size:36px;
+    color: var(--dark-blue);
+    margin:0;
+    text-align: center;
+}
+
+.achicard p{
+    font-family: 'Poppins';
+    font-size:16px;
+    color: var(--dark-blue);
+    margin-top: -8px;
+    margin-bottom: 8px;
+}
+
+.achicard .bg{
+    position:absolute;
+    height:100%;
+    width:100%;
+    background: linear-gradient(180deg, #6f7dfb 0%, #26308c 100%);
+    border-radius: 24px;
+    top:8px;
+    left:8px;
+    z-index: 1;
+}
+
+.scrolling-text-wrapper {
+    white-space: nowrap; /* 防止文字换行 */
+    overflow: hidden; /* 隐藏超出容器的文字 */
+    width: 100%; /* 宽度为容器宽度 */
+    display: flex;
+    justify-content: center;
+    margin: 10px 0;
+}
+
+.scrolling-text {
+    display: inline-block;
+    font-size: 24px;
+    animation: scroll-right 10s linear infinite; /* 启动向右滚动动画 */
+}
+
+.scrolling-text.reverse {
+    animation: scroll-left 10s linear infinite; /* 启动向左滚动动画 */
+}
+
+@keyframes scroll-right {
+    0% {
+        transform: translateX(100%); /* 初始位置：屏幕右侧外 */
+    }
+    100% {
+        transform: translateX(-100%); /* 最终位置：屏幕左侧外 */
+    }
+}
+
+@keyframes scroll-left {
+    0% {
+        transform: translateX(-100%); /* 初始位置：屏幕左侧外 */
+    }
+    100% {
+        transform: translateX(100%); /* 最终位置：屏幕右侧外 */
+    }
+}
